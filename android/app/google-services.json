@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "41265537108",
+    "project_id": "guppi-fall",
+    "storage_bucket": "guppi-fall.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:41265537108:android:65a7d02528a00929178dc1",
+        "android_client_info": {
+          "package_name": "com.example.roomiez_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "41265537108-cb2l2u2vrj32ib9jlpehdnbqmi8q5ueu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCX4RNLYmYzka9N71dzmTF4Tt3PEI__G3A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "41265537108-cb2l2u2vrj32ib9jlpehdnbqmi8q5ueu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
