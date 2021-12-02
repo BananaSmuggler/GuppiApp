@@ -1,6 +1,6 @@
-# roomiez_app
+# Guppi FLutter Application
 
-Roomate communication and organization in Flutter
+# Anonymous Social Networking for college students
 
 ## Getting Started
 
