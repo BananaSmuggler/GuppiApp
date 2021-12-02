@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +6,6 @@ import 'package:roomiez_app/services/MessageDbHelper.dart';
 import 'package:roomiez_app/services/UserDBHelper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
-
 import 'helper/Helper.dart';
 import 'home.dart';
 import 'models/Message.dart';
