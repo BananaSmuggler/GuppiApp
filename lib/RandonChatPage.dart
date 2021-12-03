@@ -84,7 +84,7 @@ class _RandomChatPageState extends State<RandomChatPage> {
       setState(() {});
     } else {
       setState(() {
-        loadingStatus = 'No Random User Found';
+        loadingStatus = 'Searching for fellow Guppi';
       });
     }
   }
