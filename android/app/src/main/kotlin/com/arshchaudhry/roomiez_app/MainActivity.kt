@@ -1,4 +1,4 @@
-package com.example.roomiez_app
+package com.arshchaudhry.roomiez_app
 
 import io.flutter.embedding.android.FlutterActivity
 

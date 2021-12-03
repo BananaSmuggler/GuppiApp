@@ -44,11 +44,9 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
         savingUserState = true;
       });
-      if (this.oldUsername.isNotEmpty && oldUsername != tempUserName) {
+      if (this.oldUsername.isEmpty || oldUsername != tempUserName) {
         Helper.deleteUserLocally();
         widget.userDbHelper.deleteUser(oldUsername);
-      }
-      if (oldUsername != tempUserName) {
         // Save it to Firebase only if not Present
         bool userSaved = await _saveUser(tempUserName);
         if (userSaved) {

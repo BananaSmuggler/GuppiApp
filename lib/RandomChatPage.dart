@@ -29,7 +29,7 @@ class _RandomChatPageState extends State<RandomChatPage> {
   String groupId = '';
 
   late User user;
-  late User peerUser;
+  late User peerUser = User('n/a', '', '', '');
 
   bool connected = false;
   String loadingStatus = 'Searching for a Random User';
@@ -81,6 +81,7 @@ class _RandomChatPageState extends State<RandomChatPage> {
       loadingStatus = 'Random User Found';
       peerUser = randomUser;
       groupId = createGroupId(this.user.userName, this.user.chattingWith);
+      Helper.savePeerUserLocally(randomUser.userName);
       setState(() {});
     } else {
       setState(() {
@@ -136,6 +137,7 @@ class _RandomChatPageState extends State<RandomChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.white,
@@ -194,117 +196,55 @@ class _RandomChatPageState extends State<RandomChatPage> {
                 child: Text('Please Set the Username.'),
               )
             : connected
-                ? Container(
-                    child: Stack(
-                      children: <Widget>[
-                        FirebaseAnimatedList(
-                          controller: _scrollerController,
-                          shrinkWrap: true,
-                          padding: EdgeInsets.only(top: 10, bottom: 10),
-                          physics: BouncingScrollPhysics(),
-                          query: widget._messageDbHelper
-                              .getGroupMessageQuery(groupId),
-                          itemBuilder: (context, DataSnapshot snapshot,
-                              animation, index) {
-                            if (snapshot.value != null) {
-                              final _jsonValue = snapshot.value;
-                              final _newMessage = Message.fromJSON(_jsonValue);
-                              return Container(
-                                  padding: EdgeInsets.only(
-                                      left: 14, right: 14, top: 5, bottom: 5),
-                                  child: Align(
-                                      alignment:
-                                          (_newMessage.senderId == currentUserID
-                                              ? Alignment.topRight
-                                              : Alignment.topLeft),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(25),
-                                          color: (_newMessage.senderId ==
-                                                  currentUserID
-                                              ? Colors.purple[200]
-                                              : Colors.grey.shade200),
-                                        ),
-                                        padding: EdgeInsets.all(13),
-                                        child: Text(
-                                          _newMessage.messageContent,
-                                          style: TextStyle(fontSize: 15),
-                                        ),
-                                      )));
-                            } else {
-                              return Center(
-                                child: Text('Start chatting...'),
-                              );
-                            }
-                          },
-                        ),
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            padding:
-                                EdgeInsets.only(left: 0, bottom: 10, top: 10),
-                            height: 60,
-                            width: double.infinity,
-                            color: Colors.white,
-                            child: Row(
-                              children: <Widget>[
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: FloatingActionButton(
-                                    // height: 30,
-                                    // width: 30,
-                                    // decoration: BoxDecoration(
-                                    //   color: Colors.purple,
-                                    //   borderRadius: BorderRadius.circular(30),
-                                    // ),
-                                    onPressed: () {
-                                      // Close the KeyBoard
-                                      FocusScope.of(context)
-                                          .requestFocus(FocusNode());
-                                    },
-                                    child: Icon(
-                                      Icons.cancel_outlined,
-                                      color: Colors.white,
-                                      size: 24,
+                ? SingleChildScrollView(
+                  reverse:  true,
+                  controller: _scrollerController,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+                    child: FirebaseAnimatedList(
+                      controller: _scrollerController,
+                      shrinkWrap: true,
+                      padding: EdgeInsets.only(top: 10, bottom: 45),
+                      physics: BouncingScrollPhysics(),
+                      query: widget._messageDbHelper
+                          .getGroupMessageQuery(groupId),
+                      itemBuilder: (context, DataSnapshot snapshot,
+                          animation, index) {
+                        if (snapshot.value != null) {
+                          final _jsonValue = snapshot.value;
+                          final _newMessage = Message.fromJSON(_jsonValue);
+                          return Container(
+                              padding: EdgeInsets.only(
+                                  left: 14, right: 14, top: 5, bottom: 5),
+                              child: Align(
+                                  alignment:
+                                      (_newMessage.senderId == currentUserID
+                                          ? Alignment.topRight
+                                          : Alignment.topLeft),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.circular(25),
+                                      color: (_newMessage.senderId ==
+                                              currentUserID
+                                          ? Colors.purple[200]
+                                          : Colors.grey.shade200),
                                     ),
-                                    backgroundColor: Colors.blue,
-                                    elevation: 5,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 15,
-                                ),
-                                Expanded(
-                                  child: TextField(
-                                    controller: _textMessageController,
-                                    decoration: InputDecoration(
-                                        hintText: "Write message...",
-                                        hintStyle:
-                                            TextStyle(color: Colors.black54),
-                                        border: InputBorder.none),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 15,
-                                ),
-                                FloatingActionButton(
-                                  onPressed: _sendMessage,
-                                  child: Icon(
-                                    Icons.send,
-                                    color: Colors.white,
-                                    size: 18,
-                                  ),
-                                  backgroundColor: Colors.blue,
-                                  elevation: 0,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+                                    padding: EdgeInsets.all(13),
+                                    child: Text(
+                                      _newMessage.messageContent,
+                                      style: TextStyle(fontSize: 15),
+                                    ),
+                                  )));
+                        } else {
+                          return Center(
+                            child: Text('Start chatting...'),
+                          );
+                        }
+                      },
                     ),
-                  )
+                  ),
+                )
                 : Dialog(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0)),
@@ -321,7 +261,69 @@ class _RandomChatPageState extends State<RandomChatPage> {
                         ],
                       ),
                     ),
-                  ));
+                  ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: connected ? Container(
+        padding:
+        EdgeInsets.only(left: 0, bottom: 10, top: 10),
+        height: 60,
+        width: double.infinity,
+        color: Colors.white,
+        child: Row(
+          children: <Widget>[
+            GestureDetector(
+              onTap: () {},
+              child: FloatingActionButton(
+                // height: 30,
+                // width: 30,
+                // decoration: BoxDecoration(
+                //   color: Colors.purple,
+                //   borderRadius: BorderRadius.circular(30),
+                // ),
+                onPressed: () {
+                  // Close the KeyBoard
+                  FocusScope.of(context)
+                      .requestFocus(FocusNode());
+                },
+                child: Icon(
+                  Icons.cancel_outlined,
+                  color: Colors.white,
+                  size: 24,
+                ),
+                backgroundColor: Colors.blue,
+                elevation: 5,
+              ),
+            ),
+            SizedBox(
+              width: 15,
+            ),
+            Expanded(
+              child: TextField(
+                controller: _textMessageController,
+                decoration: InputDecoration(
+                    hintText: "Write message...",
+                    hintStyle:
+                    TextStyle(color: Colors.black54),
+                    border: InputBorder.none),
+              ),
+            ),
+            SizedBox(
+              width: 15,
+            ),
+            FloatingActionButton(
+              onPressed: _sendMessage,
+              child: Icon(
+                Icons.send,
+                color: Colors.white,
+                size: 18,
+              ),
+              backgroundColor: Colors.blue,
+              elevation: 0,
+            ),
+          ],
+        ),
+      ) : null,
+    );
   }
 
   @override
@@ -416,6 +418,7 @@ class _RandomChatPageState extends State<RandomChatPage> {
     widget.userDbHelper.updateUser(new User(peerUser.userName, 'online', '', currentUserID));
     widget._messageDbHelper.deleteAllMessages(groupId);
     Helper.deleteGroupIdLocally();
+    Helper.deletePeerUserLocally();
     peerUser = User('n/a', 'Not Connected', '', '');
     setState(() {
       connected = false;

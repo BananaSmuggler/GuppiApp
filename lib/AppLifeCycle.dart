@@ -36,6 +36,8 @@ class _AppLifeCycleState extends State<AppLifeCycle> with WidgetsBindingObserver
   @override
   void initState() {
     super.initState();
+    // Clear any old user name
+    Helper.clearFields();
     WidgetsBinding.instance!.addObserver(this);
   }
 

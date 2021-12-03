@@ -1,15 +1,16 @@
 {
   "project_info": {
     "project_number": "41265537108",
+    "firebase_url": "https://guppi-fall-default-rtdb.firebaseio.com",
     "project_id": "guppi-fall",
     "storage_bucket": "guppi-fall.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:41265537108:android:65a7d02528a00929178dc1",
+        "mobilesdk_app_id": "1:41265537108:android:ef764856be03edf8178dc1",
         "android_client_info": {
-          "package_name": "com.example.roomiez_app"
+          "package_name": "com.arshchaudhry.roomiez_app"
         }
       },
       "oauth_client": [

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:roomiez_app/helper/Helper.dart';
-import 'package:roomiez_app/profile.dart';
-import 'package:roomiez_app/RandonChatPage.dart';
-import 'package:roomiez_app/services/MessageDbHelper.dart';
+import 'package:roomiez_app/ProfilePage.dart';
+import 'package:roomiez_app/RandomChatPage.dart';
 import 'package:roomiez_app/services/UserDBHelper.dart';
 
 import 'models/User.dart';
@@ -26,15 +25,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _getCurrentUser() async {
     //if Current User is null: get from DB
-    if (user == null) {
-      String localSavedUserName = await Helper.getLocalUserName();
-      var tempUser = await widget._userDBHelper.getUserInfo(localSavedUserName);
-      if (tempUser != null) {
-        user = tempUser;
-        setState(() {
-        });
-      }
+    String localSavedUserName = await Helper.getLocalUserName();
+    var tempUser = await widget._userDBHelper.getUserInfo(localSavedUserName);
+    if (tempUser != null) {
+      user = tempUser;
+      setState(() {});
     }
+    return tempUser;
   }
 
   @override
@@ -43,7 +40,12 @@ class _MyHomePageState extends State<MyHomePage> {
     _getCurrentUser();
   }
 
-  void onItemTap(int index){
+  void onItemTap(int index) async {
+    User tmpUser = await _getCurrentUser();
+    if (tmpUser.status == 'busy' && index != 0) {
+      Helper.displaySnackBar('Cannot change username', context);
+      return;
+    }
     setState(() {
       selectedIndex = index;
     });
@@ -51,7 +53,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: WillPopScope(
         onWillPop: _handleBackButton,
@@ -63,25 +64,23 @@ class _MyHomePageState extends State<MyHomePage> {
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.white,
         backgroundColor: Colors.purple,
-
         items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-            icon: Icon(Icons.stream,),
-            title: Text('Guppi', style: TextStyle(
-
-            ))),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.person,),
-            title: Text('Profile', style: TextStyle(
-
-            )))
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.stream,
+              ),
+              title: Text('Guppi', style: TextStyle())),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.person,
+              ),
+              title: Text('Profile', style: TextStyle()))
         ],
         currentIndex: selectedIndex,
         onTap: onItemTap,
       ),
     );
   }
-
 
   Future<void> openCloseDialog() async {
     return showDialog<void>(
@@ -120,6 +119,5 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
     widget._userDBHelper.deleteUser(user!.userName);
     Helper.deleteUserLocally();
-
   }
 }
